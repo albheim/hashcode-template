@@ -7,7 +7,7 @@ import glob
 def parse(inp):
     # TODO: implement
     itr = (map(int, li.split()) for li in inp.split('\n'))
-    r, c = next(itr)
+    r, c, d, g = next(itr)
 
     return argparse.Namespace(r=r, c=c)
 
@@ -16,6 +16,7 @@ def solve(seed, inp, log):
     # TODO: Solve the problem
     random.seed(seed)
     ns = parse(inp)
+    print(ns)
 
     return '0'
 
