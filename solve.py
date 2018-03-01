@@ -26,9 +26,17 @@ def solve(seed, inp, log):
 
 
 def show(out):
-    # TODO: Print the solution here
-    print(out)
+    out = [[0, 1], [0, 1, 2]]
 
+    result = ""
+    for vehicle in out:
+        result += "%s " % str(len(vehicle))
+        for r in vehicle:
+            result += "%s " % str(r)
+        result += "\n"
+
+    result = result[:-1]
+    print(result)
 
 def score(inp, out):
     ns = parse(inp)
