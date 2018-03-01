@@ -11,7 +11,9 @@ def parse(inp):
     customers = [None for i in range(N)]
     for i in range(N):
         a, b, x, y, s, f = map(int, lines[i + 1].split())
-        customers[i] = argparse.Namespace(a=a, b=b, x=x, y=y, s=s, f=f)
+        d = abs(a - x) + abs(b - y)
+        l = f - d
+        customers[i] = argparse.Namespace(a=a, b=b, x=x, y=y, s=s, f=f, l=l, d=d)
 
     return argparse.Namespace(R=R, C=C, F=F, N=N, B=B, T=T, customers=customers)
 
@@ -102,10 +104,10 @@ def albin_solve(seed, inp, log):
                 btime = 0
                 for r in range(len(rides)):
                     dist = abs(x - rides[r].a) + abs(y - rides[r].b)
-                    dist2 = abs(rides[r].x - rides[r].a) + abs(rides[r].y - rides[r].b)
+                    dist2 = rides[r].d
                     wait_time = max(0, rides[r].s - t - dist)
                     tot_time = t + dist + dist2 + wait_time
-                    tot_score = dist2 - dist / 2.0 - wait_time / 3.5
+                    tot_score = dist2 - dist / 2.0 - wait_time / 4.5 - rides[r].l
                     if t + dist <= rides[r].s:
                         tot_score += 10 * ns.B
                     # if not possible to complete in time skip
