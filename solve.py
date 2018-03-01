@@ -10,7 +10,8 @@ def parse(inp):
 
     customers = [None for i in range(N)]
     for i in range(N):
-        customers[i] = map(int, lines[i + 1].split())
+        a, b, x, y, s, f = map(int, lines[i + 1].split())
+        customers[i] = argparse.Namespace(a=a, b=b, x=x, y=y, s=s, f=f)
 
     return argparse.Namespace(R=R, C=C, F=F, N=N, B=B, T=T, customers=customers)
 
