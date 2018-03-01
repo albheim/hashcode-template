@@ -98,16 +98,16 @@ def albin_solve(seed, inp, log):
                 # pick next ride
                 x, y = pos[i]
                 best = -1
-                bscore = 0
+                bscore = -10000000000000
                 btime = 0
                 for r in range(len(rides)):
                     dist = abs(x - rides[r].a) + abs(y - rides[r].b)
                     dist2 = abs(rides[r].x - rides[r].a) + abs(rides[r].y - rides[r].b)
                     wait_time = max(0, rides[r].s - t - dist)
                     tot_time = t + dist + dist2 + wait_time
-                    tot_score = dist2 - dist / 2.0
+                    tot_score = dist2 - dist / 2.0 - wait_time / 3.5
                     if t + dist <= rides[r].s:
-                        tot_score += ns.B
+                        tot_score += 10 * ns.B
                     # if not possible to complete in time skip
                     if tot_time > rides[r].f or tot_time > ns.T:
                         continue
