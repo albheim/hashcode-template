@@ -2,7 +2,6 @@
 import argparse
 import random
 import glob
-import numpy as np
 
 
 def parse(inp):
@@ -18,7 +17,7 @@ def parse(inp):
 
 
 def solve(seed, inp, log):
-    return(david_solve(seed, inp, log))
+    return albin_solve(seed, inp, log)
 
 
 def show(out):
@@ -80,6 +79,61 @@ def score(inp, out):
     # print(score)
     return score
 
+def albin_solve(seed, inp, log):
+    ns = parse(inp)
+
+    rides = ns.customers
+    time = [0 for _ in range(ns.F)]
+    pos = [(0, 0) for _ in range(ns.F)]
+    ride_list = [[] for _ in range(ns.F)]
+
+    for i, ride in enumerate(rides):
+        ride.idx = i
+
+    for t in range(ns.T):
+        # print("time", t)
+        for i in range(ns.F):
+            # print("car", i)
+            if t == time[i]:
+                # pick next ride
+                x, y = pos[i]
+                best = -1
+                bscore = 0
+                btime = 0
+                for r in range(len(rides)):
+                    dist = abs(x - rides[r].a) + abs(y - rides[r].b)
+                    dist2 = abs(rides[r].x - rides[r].a) + abs(rides[r].y - rides[r].b)
+                    wait_time = max(0, rides[r].s - t - dist)
+                    tot_time = t + dist + dist2 + wait_time
+                    tot_score = dist2
+                    if t + dist <= rides[r].s:
+                        tot_score += ns.B
+                    # if not possible to complete in time skip
+                    if tot_time > rides[r].f or tot_time > ns.T:
+                        break
+                    # if bonus, take
+                    if tot_score > bscore:
+                        bscore = tot_score
+                        best = r
+                        btime = tot_time
+
+                # do ride best add points bscore add time
+                if best != -1:
+                    # print("taking customer", rides[best].idx)
+                    pos[i] = (rides[best].x, rides[best].y)
+                    time[i] += btime
+                    ride_list[i].append(rides[best].idx)
+                    del rides[best]
+
+    result = ""
+    for vehicle in ride_list:
+        result += "%s " % str(len(vehicle))
+        for c in vehicle:
+            result += "%s " % str(c)
+        result += "\n"
+
+    return result[:-1]
+
 def david_solve(seed, inp, log):
     # TODO: Solve the problem
     random.seed(seed)
@@ -117,7 +171,7 @@ def trip_dist(customer):
     return manhattan(customer.a, customer.b, customer.x, customer.y)
 
 def manhattan(a, b, x, y):
-    return np.abs(a - x) + np.abs(b - y)
+    return abs(a - x) + abs(b - y)
 
 
 def get_args():
