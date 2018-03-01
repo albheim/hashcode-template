@@ -33,9 +33,50 @@ def show(out):
 def score(inp, out):
     ns = parse(inp)
 
+    out = "2 2 1\n1 0"
+
+    rides = ns.customers
+
+    lines = out.split('\n')
+    cars = [map(int, lines[i].split()[1:]) for i in range(len(lines))]
+
+    cars_time = [0 for _ in range(ns.F)]
+    cars_idx = [0 for _ in range(ns.F)]
+
+    score = 0
+
+    for t in range(ns.T):
+        # print("time", t)
+        for i in range(ns.F):
+            # print("car", i)
+            if cars_idx[i] < len(cars[i]) and t == cars_time[i]:
+                # pick next ride
+                x = y = 0
+                if cars_idx[i] != 0:
+                    ride1 = rides[cars[i][cars_idx[i] - 1]]
+                    x, y = ride1.x, ride1.y
+                # print(rides[cars[i][cars_idx[i]]])
+                ride2 = rides[cars[i][cars_idx[i]]]
+                cars_idx[i] += 1
+
+                # calc time to finish next ride
+                dist = abs(x - ride2.a) + abs(y - ride2.b)
+                dist2 = abs(ride2.x - ride2.a) + abs(ride2.y - ride2.b)
+                wait_time = max(0, ride2.s - t - dist)
+
+                cars_time[i] += dist + dist2 + wait_time
+
+                if cars_time[i] <= ns.T:
+                    if ride2.s >= t + dist:
+                        # print("bonus", ns.B)
+                        score += ns.B
+                    if cars_time[i] <= ride2.f:
+                        # print("normal", dist2)
+                        score += dist2
 
 
-    return 0
+    # print(score)
+    return score
 
 
 def get_args():
