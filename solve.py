@@ -19,6 +19,7 @@ def solve(seed, inp, log):
     # TODO: Solve the problem
     random.seed(seed)
     ns = parse(inp)
+    print(ns)
 
     return '0'
 
