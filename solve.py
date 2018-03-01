@@ -105,12 +105,12 @@ def albin_solve(seed, inp, log):
                     dist2 = abs(rides[r].x - rides[r].a) + abs(rides[r].y - rides[r].b)
                     wait_time = max(0, rides[r].s - t - dist)
                     tot_time = t + dist + dist2 + wait_time
-                    tot_score = dist2
+                    tot_score = dist2 - dist / 2.0
                     if t + dist <= rides[r].s:
                         tot_score += ns.B
                     # if not possible to complete in time skip
                     if tot_time > rides[r].f or tot_time > ns.T:
-                        break
+                        continue
                     # if bonus, take
                     if tot_score > bscore:
                         bscore = tot_score
@@ -121,7 +121,7 @@ def albin_solve(seed, inp, log):
                 if best != -1:
                     # print("taking customer", rides[best].idx)
                     pos[i] = (rides[best].x, rides[best].y)
-                    time[i] += btime
+                    time[i] = btime
                     ride_list[i].append(rides[best].idx)
                     del rides[best]
 
