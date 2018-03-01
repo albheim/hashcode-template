@@ -5,11 +5,14 @@ import glob
 
 
 def parse(inp):
-    # TODO: implement
-    itr = (map(int, li.split()) for li in inp.split('\n'))
-    r, c = next(itr)
+    lines = inp.split('\n')
+    R, C, F, N, B, T = map(int, lines[0].split())
 
-    return argparse.Namespace(r=r, c=c)
+    customers = [None for i in range(N)]
+    for i in range(N):
+        customers[i] = map(int, lines[i + 1].split())
+
+    return argparse.Namespace(R=R, C=C, F=F, N=N, B=B, T=T, customers=customers)
 
 
 def solve(seed, inp, log):
@@ -26,10 +29,9 @@ def show(out):
 
 
 def score(inp, out):
-    # TODO: implement
+    ns = parse(inp)
 
-    if __name__ == '__main__' and args.s:
-        show(out)
+
 
     return 0
 
