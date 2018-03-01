@@ -2,6 +2,7 @@
 import argparse
 import random
 import glob
+import numpy as np
 
 
 def parse(inp):
@@ -17,12 +18,7 @@ def parse(inp):
 
 
 def solve(seed, inp, log):
-    # TODO: Solve the problem
-    random.seed(seed)
-    ns = parse(inp)
-    print(ns)
-
-    return '0'
+    return(david_solve(seed, inp, log))
 
 
 def show(out):
@@ -41,12 +37,10 @@ def show(out):
 def score(inp, out):
     ns = parse(inp)
 
-    out = "2 2 1\n1 0"
-
     rides = ns.customers
 
     lines = out.split('\n')
-    cars = [map(int, lines[i].split()[1:]) for i in range(len(lines))]
+    cars = [list(map(int, lines[i].split()[1:])) for i in range(len(lines))]
 
     cars_time = [0 for _ in range(ns.F)]
     cars_idx = [0 for _ in range(ns.F)]
@@ -85,6 +79,45 @@ def score(inp, out):
 
     # print(score)
     return score
+
+def david_solve(seed, inp, log):
+    # TODO: Solve the problem
+    random.seed(seed)
+    ns = parse(inp)
+    vehicles = []
+    scheduled = []
+    for i in range(len(ns.customers)):
+        scheduled.append(False)
+
+    for i in range(ns.F):
+        vehicle = argparse.Namespace(x=0, y=0, time=0, customers=[])
+        vehicles.append(vehicle)
+        for idx, customer in enumerate(ns.customers):
+            to_customer = manhattan(vehicle.x, vehicle.y, customer.a, customer.b)
+            start = max(vehicle.time + to_customer, customer.s)
+            finish = start + trip_dist(customer)
+            if not scheduled[idx] and finish <= customer.f:
+                vehicle.customers.append(idx)
+                scheduled[idx] = True
+                vehicle.time = finish
+                vehicle.x = customer.x
+                vehicle.y = customer.y
+
+    result = ""
+    for vehicle in vehicles:
+        result += "%s " % str(len(vehicle.customers))
+        for c in vehicle.customers:
+            result += "%s " % str(c)
+        result += "\n"
+
+    result = result[:-1]
+    return result
+
+def trip_dist(customer):
+    return manhattan(customer.a, customer.b, customer.x, customer.y)
+
+def manhattan(a, b, x, y):
+    return np.abs(a - x) + np.abs(b - y)
 
 
 def get_args():
